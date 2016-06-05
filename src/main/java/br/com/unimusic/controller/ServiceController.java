@@ -27,7 +27,6 @@ public class ServiceController {
 	 * Esse método cadastra uma nova pessoa
 	 * */
 	@POST	
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/cadastrar")
 	public String Cadastrar(String musica){
@@ -38,11 +37,11 @@ public class ServiceController {
  
 			repository.salvar(entity);
  
-			return musica;
+			return "OK";
  
 		} catch (Exception e) {
  
-			return "403" + e.getMessage();
+			return "ERRO";
 		}
  
 	}
