@@ -2,7 +2,6 @@ package br.com.unimusic.controller;
 
 import java.util.List;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -19,18 +18,12 @@ import br.com.unimusic.model.repository.MusicaRepository;
 public class ServiceController {
 	
 	private final MusicaRepository repository = new MusicaRepository();
+	private final Gson gson = new Gson();
 	
-	/**
-	 * @Consumes - determina o formato dos dados que vamos postar
-	 * @Produces - determina o formato dos dados que vamos retornar
-	 * 
-	 * Esse método cadastra uma nova pessoa
-	 * */
 	@POST	
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/cadastrar")
 	public String Cadastrar(String musica){
-		Gson gson = new Gson();
 		Musica entity = gson.fromJson(musica, Musica.class);
  
 		try {
@@ -52,7 +45,7 @@ public class ServiceController {
 	public String TodasMusicas(){
  
 		List<Musica> todas = this.repository.todasMusicas();
-		String musicas = new Gson().toJson(todas);
+		String musicas = gson.toJson(todas);
 		
 		return musicas;
 	}
@@ -68,5 +61,15 @@ public class ServiceController {
 			return entity;
  
 		return null;
+	}
+	
+	@GET
+	@Produces("application/json; charset=UTF-8")
+	@Path("/buscar/{q}")
+	public String buscaAvancada(@PathParam("q") String q){
+		List<Musica> relevantes = repository.buscaAvancada(q);
+		String jsonRelevantes = gson.toJson(relevantes,Musica.class);
+		
+		return jsonRelevantes;
 	}
 }

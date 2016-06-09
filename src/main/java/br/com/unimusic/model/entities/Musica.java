@@ -2,6 +2,7 @@ package br.com.unimusic.model.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 
 @Entity
 public class Musica {
@@ -10,7 +11,9 @@ public class Musica {
 	private String id;
 	private String titulo;
 	private String artista;
+	@Lob
 	private String letra;
+	@Lob
 	private String traducao;
 	
 	public Musica() {

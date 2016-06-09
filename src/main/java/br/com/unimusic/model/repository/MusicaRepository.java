@@ -1,79 +1,98 @@
 package br.com.unimusic.model.repository;
 
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 import br.com.unimusic.model.entities.Musica;
+import br.com.unimusic.model.utils.ModeloVetorial;
 
 public class MusicaRepository {
 	
-	private final EntityManagerFactory entityManagerFactory;
+	private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("WSR");
 	 
 	private final EntityManager entityManager;
 
 	public MusicaRepository() {
 		super();
-		/*CRIANDO O NOSSO EntityManagerFactory COM AS PORPRIEDADOS DO ARQUIVO persistence.xml */
-		this.entityManagerFactory = Persistence.createEntityManagerFactory("WSR");
- 
+
 		this.entityManager = this.entityManagerFactory.createEntityManager();
 	}
 	
-	/**
-	 * CRIA UM NOVO REGISTRO NO BANCO DE DADOS
-	 * */
 	public void salvar(Musica musica){
+		
+		if (null != getMusica(musica.getId())) return;
  
-		this.entityManager.getTransaction().begin();
-		this.entityManager.persist(musica);
-		this.entityManager.getTransaction().commit();
+		try {
+			this.entityManager.getTransaction().begin();
+			this.entityManager.persist(musica);
+			
+		} catch (Exception e) {
+			this.entityManager.getTransaction().rollback();
+		}finally {
+			this.entityManager.getTransaction().commit();
+		}
 	}
  
-	/**
-	 * ALTERA UM REGISTRO CADASTRADO
-	 * */
 	public void alterar(Musica musica){
- 
-		this.entityManager.getTransaction().begin();
-		this.entityManager.merge(musica);
-		this.entityManager.getTransaction().commit();
+		
+		try {
+			this.entityManager.getTransaction().begin();
+			this.entityManager.merge(musica);
+			
+		} catch (Exception e) {
+			this.entityManager.getTransaction().rollback();
+		}finally {
+			this.entityManager.getTransaction().commit();
+		}
 	}
- 
-	/**
-	 * RETORNA TODAS AS PESSOAS CADASTRADAS NO BANCO DE DADOS 
-	 * */
+
 	@SuppressWarnings("unchecked")
 	public List<Musica> todasMusicas(){
  
 		return this.entityManager.createQuery("SELECT p FROM Musica p ORDER BY p.id").getResultList();
 	}
  
-	/**
-	 * CONSULTA UMA PESSOA CADASTRA PELO CÓDIGO
-	 * */
 	public Musica getMusica(String id){
  
 		return this.entityManager.find(Musica.class, id);
 	}
+	
+	public List<Musica> buscaAvancada(String q){
+		
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("SELECT p FROM Musica p");
+		stringBuilder.append(" WHERE p.letra LIKE p:cLetra ");
+		stringBuilder.append(" OR p.titulo LIKE p:cLetra ");
+		stringBuilder.append(" OR p.artista LIKE p:cLetra ");
+		stringBuilder.append(" ORDER BY p.id");
+		
+		Query query = this.entityManager.createQuery(stringBuilder.toString());
+		query.setParameter("cLetra", q);
+		
+		List<Musica> musicas = new ModeloVetorial(query.getResultList(),q).reclassifica();
+		
+		return null;
+	}
  
-	/**
-	 * EXCLUINDO UM REGISTRO PELO CÓDIGO
-	**/
 	public void excluir(String id){
  
 		Musica musica = this.getMusica(id);
 		
 		try {
-			this.entityManager.getTransaction().begin();
 			this.entityManager.remove(musica);
 		} catch (Exception e) {
 			this.entityManager.getTransaction().rollback();
 		}finally {
 			this.entityManager.getTransaction().commit();
 		}
- 
+	}
+	
+	public Long count(){
+		
+		Query q = entityManager.createQuery("select count(*) from Musica");
+		return (Long) q.getSingleResult();
 	}
 }
