@@ -59,20 +59,22 @@ public class MusicaRepository {
  
 		return this.entityManager.find(Musica.class, id);
 	}
-	
+	/* 
+	 * Busca utilizando o modelo vetorial
+	 * */
 	public List<Musica> buscaAvancada(String q){
 		
-		StringBuilder stringBuilder = new StringBuilder();
+		/*StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT p FROM Musica p");
-		stringBuilder.append(" WHERE p.letra LIKE p:cLetra ");
-		stringBuilder.append(" OR p.titulo LIKE p:cLetra ");
-		stringBuilder.append(" OR p.artista LIKE p:cLetra ");
-		stringBuilder.append(" ORDER BY p.id");
-		
+		stringBuilder.append(" WHERE p.letra LIKE %p:cLetra% ");
+		stringBuilder.append(" OR p.titulo LIKE %p:cLetra% ");
+		stringBuilder.append(" OR p.artista LIKE %p:cLetra% ");
+		stringBuilder.append(" ORDER BY p.id");*/
+		/*
 		Query query = this.entityManager.createQuery(stringBuilder.toString());
-		query.setParameter("cLetra", q);
+		query.setParameter("cLetra", q);*/
 		
-		List<Musica> musicas = new ModeloVetorial(query.getResultList(),q).reclassifica();
+		List<Musica> musicas = new ModeloVetorial(this.todasMusicas(),q).reclassifica();
 		
 		return null;
 	}

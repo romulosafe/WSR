@@ -3,6 +3,7 @@ package br.com.unimusic.model.entities;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Transient;
 
 @Entity
 public class Musica {
@@ -15,6 +16,8 @@ public class Musica {
 	private String letra;
 	@Lob
 	private String traducao;
+	@Transient
+	private Double peso;
 	
 	public Musica() {
 	}
@@ -66,6 +69,15 @@ public class Musica {
 
 	public void setTraducao(String traducao) {
 		this.traducao = traducao;
+	}
+
+	public void setPeso(Double peso) {
+		this.peso = peso;
+		
+	}
+	
+	public Double getPeso() {
+		return peso;
 	}
 	
 }
