@@ -1,0 +1,39 @@
+#logo-img {
+	margin-top: 1em;
+    max-width: 20%;
+    max-height: 20%;
+}
+
+.intro-text {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.checkbox {
+	padding-top: 2em;
+}
+
+
+.abstract-description {
+    text-align: center;
+}
+
+/* Animacoes de loading */
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+
+.form-control {
+    display: initial !important;
+    width: 82% !important;
+}    

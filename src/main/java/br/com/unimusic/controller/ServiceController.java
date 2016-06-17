@@ -63,12 +63,12 @@ public class ServiceController {
 		return null;
 	}
 	
-	@GET
+	@POST
 	@Produces("application/json; charset=UTF-8")
-	@Path("/buscar/{q}")
-	public String buscaAvancada(@PathParam("q") String q){
+	@Path("/buscar")
+	public String buscaAvancada(String q){
 		List<Musica> relevantes = repository.buscaAvancada(q);
-		String jsonRelevantes = gson.toJson(relevantes,Musica.class);
+		String jsonRelevantes = gson.toJson(relevantes);
 		
 		return jsonRelevantes;
 	}

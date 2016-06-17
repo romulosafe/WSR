@@ -62,21 +62,30 @@ public class MusicaRepository {
 	/* 
 	 * Busca utilizando o modelo vetorial
 	 * */
+	@SuppressWarnings("unchecked")
 	public List<Musica> buscaAvancada(String q){
 		
-		/*StringBuilder stringBuilder = new StringBuilder();
+		ModeloVetorial modelo = new ModeloVetorial(this.todasMusicas(),q);
+		
+		if (modelo.reclassifica() != null) {
+			return modelo.reclassifica();
+		}
+		
+		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT p FROM Musica p");
-		stringBuilder.append(" WHERE p.letra LIKE %p:cLetra% ");
-		stringBuilder.append(" OR p.titulo LIKE %p:cLetra% ");
-		stringBuilder.append(" OR p.artista LIKE %p:cLetra% ");
-		stringBuilder.append(" ORDER BY p.id");*/
-		/*
+		stringBuilder.append(" WHERE p.letra LIKE :cLetra ");
+		stringBuilder.append(" OR p.titulo LIKE :cLetra ");
+		stringBuilder.append(" OR p.artista LIKE :cLetra ");
+		stringBuilder.append(" ORDER BY p.id");
+		
 		Query query = this.entityManager.createQuery(stringBuilder.toString());
-		query.setParameter("cLetra", q);*/
 		
-		List<Musica> musicas = new ModeloVetorial(this.todasMusicas(),q).reclassifica();
+		query.setMaxResults(12);
+		query.setParameter("cLetra", "%"+q+"%");
 		
-		return null;
+		List<Musica> musicas = query.getResultList();
+		
+		return musicas.subList(0, musicas.size() > 11? 11 : musicas.size());
 	}
  
 	public void excluir(String id){

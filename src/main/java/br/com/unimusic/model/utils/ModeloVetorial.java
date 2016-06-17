@@ -2,6 +2,7 @@ package br.com.unimusic.model.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import br.com.unimusic.model.entities.Musica;
@@ -18,7 +19,6 @@ public class ModeloVetorial {
 	private Double IDF;
 
 	public ModeloVetorial(List<Musica> musicas,String termo) {
-		this.musicas = musicas; 
 		
 		try {
 			for (Musica musica : musicas) {
@@ -34,6 +34,7 @@ public class ModeloVetorial {
 							DF++;
 						}
 					}
+					
 					//DF  = musica.getLetra().length();//Quantidade te termos da coleção
 					N  = (double) musica.getLetra().split(" ").length;//Quantidade te termos da coleção
 					
@@ -44,9 +45,13 @@ public class ModeloVetorial {
 				}
 			}
 			
-			for (int i = 0; i < musicas.size(); i++) {
+			for (int i = 0; i < wij.size(); i++) {
 				Double wi = wij.get(i);
 				Double wq = wiq.get(i);
+				
+				if (wi == null || wq == null) {
+					continue;
+				}
 				
 				musicas.get(i).setPeso(
 										(wi * wq)
@@ -56,16 +61,35 @@ public class ModeloVetorial {
 				
 				System.out.println(musicas.get(i));
 			}
+			List<Musica> filtro = new ArrayList<>();
+			
+			for (Musica m : musicas) {
+				if (m.getPeso() != null) {
+					filtro.add(m);
+				}
+			}
+			
+			this.musicas = this.reordena(filtro);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	private List<Musica> reordena(List<Musica> filtro) {
+		
+		Collections.sort(filtro,new Comparator<Musica>() {
+
+			@Override
+			public int compare(Musica m1, Musica m2) {
+				
+				return m1.getPeso() < m2.getPeso() ? -1 : (m1.getPeso() > m2.getPeso() ? +1 : 0);
+			}
+		});
+		return filtro.subList(0, 11);
+	}
+
 	public List<Musica> reclassifica(){
-		
-/*		List<Musica> mus = Collections.sort(musicas, null);
-		
-		return Collections.somusicas;*/
-		return null;
+	
+		return musicas;
 	}
 }
